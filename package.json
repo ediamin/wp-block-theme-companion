@@ -15,7 +15,8 @@
     "onLanguage:php",
     "onLanguage:vue",
     "onLanguage:typescriptreact",
-    "onLanguage:javascript"
+    "onLanguage:javascript",
+    "onLanguage:json"
   ],
   "main": "./dist/extension.js",
   "contributes": {

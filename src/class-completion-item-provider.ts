@@ -13,9 +13,7 @@ export class ClassCompletionItemProvider implements CompletionItemProvider {
 
     provideCompletionItems(document: TextDocument, position: Position, token: CancellationToken, context: CompletionContext): ProviderResult<CompletionItem[] | CompletionList<CompletionItem>> {
         if (! canTriggerCompletion(document, position)) {
-            return Promise.reject<vscode.CompletionItem[]>(
-                'Not inside html class attribute.'
-                );
+            return [ new vscode.CompletionItem('') ];
         }
 
         return this.completionItems as PromiseLike<vscode.CompletionItem[]>;
