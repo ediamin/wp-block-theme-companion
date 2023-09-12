@@ -22,8 +22,35 @@
   "contributes": {
     "commands": [
       {
-        "command": "wp-block-theme-companion.helloWorld",
-        "title": "Hello World"
+        "command": "wpBlockThemeCompanion.useThisThemeJson",
+        "title": "WP Block Theme Companion: Use this theme.json"
+
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "wpBlockThemeCompanion.useThisThemeJson",
+          "when": "resourceFilename === theme.json"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "wpBlockThemeCompanion.useThisThemeJson",
+          "when": "resourceFilename === theme.json"
+        }
+      ]
+    },
+    "configuration":[
+      {
+        "title": "WP Block Theme Companion",
+        "properties": {
+          "wpBlockThemeCompanion.themeJsonPath": {
+            "type": "string",
+            "default": "",
+            "description": "Set the theme.json file path relative to the project root in the workspace's settings.json"
+          }
+        }
       }
     ]
   },

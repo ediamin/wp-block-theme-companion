@@ -20,6 +20,32 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.languages.registerCompletionItemProvider(selector, cssVariableCompletionProvider)
         );
 	});
+
+	const setThemeJsonFile = vscode.commands.registerCommand('wpBlockThemeCompanion.useThisThemeJson', () => {
+        const projectRoot = vscode.workspace.workspaceFolders?.[0].uri.path ?? '';
+        const filePath = vscode.window.activeTextEditor?.document.uri.path ?? '';
+        const relativePath = filePath?.replace( projectRoot, '' );
+
+        if ( ! relativePath ) {
+            return;
+        }
+
+        const config = vscode.workspace.getConfiguration();
+        config.update(
+            'wpBlockThemeCompanion.themeJsonPath',
+            `\${workspaceFolder}${ relativePath }`,
+            vscode.ConfigurationTarget.Workspace
+        ).then(
+            () => {
+                vscode.window.showInformationMessage( 'Your theme.json added to the settings successfully.' );
+            },
+            () => {
+                vscode.window.showErrorMessage( 'Could not add the theme.json to the settings. Please try again.' );
+            }
+        );
+	});
+
+	context.subscriptions.push( setThemeJsonFile );
 }
 
 export function deactivate() {}
