@@ -2,7 +2,49 @@ import * as vscode from 'vscode';
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
 
-export function activate(context: vscode.ExtensionContext) {
+import type { ThemeJson } from './types/types';
+
+async function readThemeJson(): Promise<ThemeJson> {
+    console.log( 'from readThemeJson' );
+
+    let themeJson: ThemeJson = {
+        version: 2,
+    };
+
+
+    const config = vscode.workspace.getConfiguration();
+    const themeJsonPath = config.get( 'wpBlockThemeCompanion.themeJsonPath' ) as string;
+
+    if ( ! themeJsonPath ) {
+        vscode.window.showErrorMessage( `theme.json path not found. 'wpBlockThemeCompanion.themeJsonPath' settings is empty.` );
+        return themeJson;
+    }
+
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+
+    if ( ! workspaceFolder ) {
+        vscode.window.showErrorMessage('No workspace folder found.');
+        return themeJson;
+    }
+
+    const jsonFileUri = vscode.Uri.joinPath(workspaceFolder.uri, themeJsonPath );
+
+    try {
+        // Read the JSON file
+        const fileContent = await vscode.workspace.fs.readFile(jsonFileUri);
+
+        // Parse the JSON data
+        const jsonText = Buffer.from(fileContent).toString('utf8');
+
+        themeJson = JSON.parse(jsonText) as ThemeJson;
+    } catch (error) {
+        vscode.window.showErrorMessage( `Error reading or parsing JSON file:  ${ themeJsonPath }` );
+    }
+
+    return themeJson;
+}
+
+export async function activate(context: vscode.ExtensionContext) {
 	const classCompletionProvider = new ClassCompletionItemProvider();
 	const classCompletionSubscriptions = [ 'html', 'cshtml', 'php' ];
 
@@ -24,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const setThemeJsonFile = vscode.commands.registerCommand('wpBlockThemeCompanion.useThisThemeJson', () => {
         const projectRoot = vscode.workspace.workspaceFolders?.[0].uri.path ?? '';
         const filePath = vscode.window.activeTextEditor?.document.uri.path ?? '';
-        const relativePath = filePath?.replace( projectRoot, '' );
+        const relativePath = filePath?.replace( `${projectRoot}/`, '' );
 
         if ( ! relativePath ) {
             return;
@@ -33,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
         const config = vscode.workspace.getConfiguration();
         config.update(
             'wpBlockThemeCompanion.themeJsonPath',
-            `\${workspaceFolder}${ relativePath }`,
+            relativePath,
             vscode.ConfigurationTarget.Workspace
         ).then(
             () => {
@@ -46,6 +88,10 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push( setThemeJsonFile );
+
+    const themeJson = await readThemeJson();
+
+    console.log( themeJson );
 }
 
 export function deactivate() {}
