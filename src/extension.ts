@@ -1,49 +1,7 @@
 import * as vscode from 'vscode';
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
-import wpThemeJson from './wp-theme-json';
-
-import type { ThemeJson } from './types';
-
-async function readThemeJson(): Promise<ThemeJson> {
-    console.log( 'from readThemeJson' );
-
-    let themeJson: ThemeJson = {
-        version: 2,
-    };
-
-
-    const config = vscode.workspace.getConfiguration();
-    const themeJsonPath = config.get( 'wpBlockThemeCompanion.themeJsonPath' ) as string;
-
-    if ( ! themeJsonPath ) {
-        vscode.window.showErrorMessage( `theme.json path not found. 'wpBlockThemeCompanion.themeJsonPath' settings is empty.` );
-        return themeJson;
-    }
-
-    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-
-    if ( ! workspaceFolder ) {
-        vscode.window.showErrorMessage('No workspace folder found.');
-        return themeJson;
-    }
-
-    const jsonFileUri = vscode.Uri.joinPath(workspaceFolder.uri, themeJsonPath );
-
-    try {
-        // Read the JSON file
-        const fileContent = await vscode.workspace.fs.readFile(jsonFileUri);
-
-        // Parse the JSON data
-        const jsonText = Buffer.from(fileContent).toString('utf8');
-
-        themeJson = JSON.parse(jsonText) as ThemeJson;
-    } catch (error) {
-        vscode.window.showErrorMessage( `Error reading or parsing JSON file:  ${ themeJsonPath }` );
-    }
-
-    return themeJson;
-}
+import {wpThemeJson, readThemeJson} from './theme-json';
 
 export async function activate(context: vscode.ExtensionContext) {
 	const classCompletionProvider = new ClassCompletionItemProvider();
@@ -91,8 +49,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push( setThemeJsonFile );
 
     const themeJson = await readThemeJson();
-
-    wpThemeJson( themeJson );
+    const themeJsonData = wpThemeJson( themeJson );
+    cssVariableCompletionProvider.refreshCompletionItems( themeJsonData.cssVariableAggregatorItems );
 }
 
 export function deactivate() {}

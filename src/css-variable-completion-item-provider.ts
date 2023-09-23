@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import cssVariableAggregator from './css-variable-aggregator';
 
 import type { CancellationToken, CompletionContext, CompletionItem, CompletionItemProvider, CompletionList, Position, ProviderResult, TextDocument } from 'vscode';
+import { CssVariableAggregatorItems } from './types';
 
 export class CssVariableCompletionItemProvider implements CompletionItemProvider {
 
@@ -19,8 +20,8 @@ export class CssVariableCompletionItemProvider implements CompletionItemProvider
         return this.completionItems as PromiseLike<vscode.CompletionItem[]>;
     }
 
-    public refreshCompletionItems() {
-        this.completionItems = cssVariableAggregator().then((cssVariable) => {
+    public refreshCompletionItems( aggregatorItems: CssVariableAggregatorItems = [] ) {
+        this.completionItems = cssVariableAggregator( aggregatorItems ).then((cssVariable) => {
             const completionItems = cssVariable.map((variable) => {
                 const completionItem = new vscode.CompletionItem(variable.variable, variable.kind);
                 completionItem.insertText = variable.variable;
