@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
+import wpThemeJson from './wp-theme-json';
 
-import type { ThemeJson } from './types/types';
+import type { ThemeJson } from './types';
 
 async function readThemeJson(): Promise<ThemeJson> {
     console.log( 'from readThemeJson' );
@@ -91,7 +92,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const themeJson = await readThemeJson();
 
-    console.log( themeJson );
+    wpThemeJson( themeJson );
 }
 
 export function deactivate() {}
