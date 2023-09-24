@@ -2,23 +2,23 @@ import PRESETS_METADATA from './presets-metadata';
 
 import type { ThemeJson, CssVariableAggregatorItem, PresetMetadata } from '../types';
 
-function aggregateAutoCompletionItems(preset: PresetMetadata, presetData: Record<string, any>, cssVariableAggregatorItems: CssVariableAggregatorItem[]): CssVariableAggregatorItem[] {
-    presetData.forEach( ( settingObj: any ) => {
+function aggregateAutoCompletionItems(presetMetadata: PresetMetadata, presets: Record<string, any>[], cssVariableAggregatorItems: CssVariableAggregatorItem[]): CssVariableAggregatorItem[] {
+    presets.forEach( ( preset: Record<string, any> ) => {
         let value = '';
 
-        if ( preset.valueKey ) {
-            value = settingObj[ preset.valueKey ];
+        if ( presetMetadata.valueKey ) {
+            value = preset[ presetMetadata.valueKey ];
         }
 
-        if ( preset.valueFunc ) {
-            value = preset.valueFunc( settingObj );
+        if ( presetMetadata.valueFunc ) {
+            value = presetMetadata.valueFunc( preset );
         }
 
         cssVariableAggregatorItems.push( {
-            variable: preset.cssVars.replace( '$slug', settingObj.slug ),
+            variable: presetMetadata.cssVars.replace( '$slug', preset.slug ),
             value,
-            kind: preset.kind,
-            detail: preset.detail,
+            kind: presetMetadata.kind,
+            detail: presetMetadata.detail,
         } );
     } );
 
@@ -32,18 +32,18 @@ async function wpThemeJson( themeJson: ThemeJson ) {
     const coreThemeJson = await import( './theme.json' ) as ThemeJson;
     const { settings: coreSettings } = coreThemeJson;
 
-    PRESETS_METADATA.forEach( ( preset ) => {
+    PRESETS_METADATA.forEach( ( presetMetadata ) => {
         // @todo: Work on this type.
         // @ts-ignore
-        const { corePresetData, presetData } = preset.path.reduce( ( settingsObjects, path ) => {
+        const { corePresets, presets } = presetMetadata.path.reduce( ( settingsObjects, path ) => {
             return {
-                corePresetData: settingsObjects.corePresetData?.[path] ?? [],
-                presetData: settingsObjects.presetData?.[path] ?? [],
+                corePresets: settingsObjects.corePresets?.[path] ?? [],
+                presets: settingsObjects.presets?.[path] ?? [],
             };
-        }, {corePresetData: coreSettings, presetData: settings} );
+        }, {corePresets: coreSettings, presets: settings} );
 
-        cssVariableAggregatorItems = aggregateAutoCompletionItems( preset, corePresetData, cssVariableAggregatorItems );
-        cssVariableAggregatorItems = aggregateAutoCompletionItems( preset, presetData, cssVariableAggregatorItems );
+        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, corePresets, cssVariableAggregatorItems );
+        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, presets, cssVariableAggregatorItems );
     } );
 
     return {
