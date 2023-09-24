@@ -2,7 +2,7 @@ import PRESETS_METADATA from './presets-metadata';
 
 import type { ThemeJson, CssVariableAggregatorItem, PresetMetadata } from '../types';
 
-function aggregateAutoCompletionItems(presetMetadata: PresetMetadata, presets: Record<string, any>[], cssVariableAggregatorItems: CssVariableAggregatorItem[]): CssVariableAggregatorItem[] {
+function aggregateAutoCompletionItems(presetMetadata: PresetMetadata, presets: Record<string, any>[], cssVariableAggregatorItems: CssVariableAggregatorItem[], themeJson: ThemeJson): CssVariableAggregatorItem[] {
     presets.forEach( ( preset: Record<string, any> ) => {
         let value = '';
 
@@ -11,7 +11,7 @@ function aggregateAutoCompletionItems(presetMetadata: PresetMetadata, presets: R
         }
 
         if ( presetMetadata.valueFunc ) {
-            value = presetMetadata.valueFunc( preset );
+            value = presetMetadata.valueFunc( preset, themeJson );
         }
 
         cssVariableAggregatorItems.push( {
@@ -42,8 +42,8 @@ async function wpThemeJson( themeJson: ThemeJson ) {
             };
         }, {corePresets: coreSettings, presets: settings} );
 
-        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, corePresets, cssVariableAggregatorItems );
-        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, presets, cssVariableAggregatorItems );
+        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, corePresets, cssVariableAggregatorItems, themeJson );
+        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, presets, cssVariableAggregatorItems, themeJson );
     } );
 
     return {
