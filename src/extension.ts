@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
-import {wpThemeJson, readThemeJson} from './theme-json';
+import {wpThemeJson, getThemeJson} from './theme-json';
 
 export async function activate(context: vscode.ExtensionContext) {
 	const classCompletionProvider = new ClassCompletionItemProvider();
@@ -48,8 +48,19 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push( setThemeJsonFile );
 
-    const themeJson = await readThemeJson();
-    const themeJsonData = wpThemeJson( themeJson );
+    // Read the theme.json.
+    const themeJson = await getThemeJson();
+
+    // If no theme.json is provided or the json does not have settings
+    // then do not proceed.
+    if ( ! themeJson.settings ) {
+        return;
+    }
+
+    // Generate the autocompletion data.
+    const themeJsonData = await wpThemeJson( themeJson );
+
+    // Refresh autocompletion data and set the data generated from the theme.json.
     cssVariableCompletionProvider.refreshCompletionItems( themeJsonData.cssVariableAggregatorItems );
 }
 

@@ -1,4 +1,3 @@
-const coreThemeJson = JSON.parse(`
 {
 	"version": 2,
 	"settings": {
@@ -319,6 +318,3 @@ const coreThemeJson = JSON.parse(`
 		}
 	}
 }
-`);
-
-export default coreThemeJson;

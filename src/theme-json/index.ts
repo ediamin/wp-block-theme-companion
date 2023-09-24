@@ -1,7 +1,7 @@
 import wpThemeJson from './wp-theme-json';
-import readThemeJson from './read-theme-json';
+import getThemeJson from './get-theme-json';
 
 export {
     wpThemeJson,
-    readThemeJson,
+    getThemeJson,
 };
