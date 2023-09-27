@@ -1,7 +1,6 @@
 import { empty, isNumeric } from '../utils';
 
 type FontSizeUnits = 'px' | 'rem' | 'em' | '';
-type RawValue = string | number;
 interface Options {
     coerceTo?: FontSizeUnits;
     rootSizeValue?: number;
@@ -9,7 +8,7 @@ interface Options {
 }
 
 // The JS version of the core `wp_get_typography_value_and_unit` function.
-function getTypographyValueAndUnit( rawValue: RawValue, options?: Options ): { value: number; unit: string; } | null  {
+function getTypographyValueAndUnit( rawValue: any, options?: Options ): { value: number; unit: FontSizeUnits; } | null  {
     if ( typeof rawValue !== 'string' && typeof rawValue !== 'number' ) {
         return null;
     }
