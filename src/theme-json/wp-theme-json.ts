@@ -11,7 +11,7 @@ function aggregateAutoCompletionItems(presetMetadata: PresetMetadata, presets: R
         }
 
         if ( presetMetadata.valueFunc ) {
-            value = presetMetadata.valueFunc( preset, themeJson );
+            value = presetMetadata.valueFunc( themeJson, preset );
         }
 
         cssVariableAggregatorItems.push( {

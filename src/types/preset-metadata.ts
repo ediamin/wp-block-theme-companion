@@ -5,7 +5,7 @@ export interface PresetMetadata {
     // Based on the `WP_Theme_JSON::PRESETS_METADATA` constant.
     path: string[];
     valueKey?: string;
-    valueFunc?: ( preset: any, themeJson: ThemeJson ) => any;
+    valueFunc?: ( themeJson: ThemeJson, preset: any ) => any;
     cssVars: string;
     classes: Record<string, string>;
     // Custom props required to generated autocompletion data.
