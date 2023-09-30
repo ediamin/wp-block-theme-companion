@@ -1,6 +1,7 @@
-const path = require( 'path' );
 const fs = require( 'fs' );
-const { compileFromFile } = require('json-schema-to-typescript');
+const path = require( 'path' );
+
+const { compileFromFile } = require( 'json-schema-to-typescript' );
 
 /**
  * This script generate types from the theme.json schema downloaded
@@ -12,10 +13,10 @@ const { compileFromFile } = require('json-schema-to-typescript');
  *    The last hyphen after 9 causes the problem. I cannot add an escape char in json file.
  */
 async function generateTypes() {
-  const filePath = path.resolve( __dirname, 'schema.json' );
-  const tsContent = await compileFromFile(filePath);
+	const filePath = path.resolve( __dirname, 'schema.json' );
+	const tsContent = await compileFromFile( filePath );
 
-  fs.writeFileSync( path.resolve( __dirname, 'theme-json.ts' ), tsContent );
+	fs.writeFileSync( path.resolve( __dirname, 'theme-json.ts' ), tsContent );
 }
 
 generateTypes();

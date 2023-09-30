@@ -1,7 +1,4 @@
 import empty from './empty';
 import isNumeric from './isNumeric';
 
-export {
-    empty,
-    isNumeric,
-};
+export { empty, isNumeric };

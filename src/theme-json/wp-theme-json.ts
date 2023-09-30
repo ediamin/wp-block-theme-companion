@@ -1,54 +1,77 @@
 import PRESETS_METADATA from './presets-metadata';
 
-import type { ThemeJson, CssVariableAggregatorItem, PresetMetadata } from '../types';
+import type {
+	CssVariableAggregatorItem,
+	PresetMetadata,
+	ThemeJson,
+} from '../types';
 
-function aggregateAutoCompletionItems(presetMetadata: PresetMetadata, presets: Record<string, any>[], cssVariableAggregatorItems: CssVariableAggregatorItem[], themeJson: ThemeJson): CssVariableAggregatorItem[] {
-    presets.forEach( ( preset: Record<string, any> ) => {
-        let value = '';
+function aggregateAutoCompletionItems(
+	presetMetadata: PresetMetadata,
+	presets: Record< string, any >[],
+	cssVariableAggregatorItems: CssVariableAggregatorItem[],
+	themeJson: ThemeJson
+): CssVariableAggregatorItem[] {
+	presets.forEach( ( preset: Record< string, any > ) => {
+		let value = '';
 
-        if ( presetMetadata.valueKey ) {
-            value = preset[ presetMetadata.valueKey ];
-        }
+		if ( presetMetadata.valueKey ) {
+			value = preset[ presetMetadata.valueKey ];
+		}
 
-        if ( presetMetadata.valueFunc ) {
-            value = presetMetadata.valueFunc( themeJson, preset );
-        }
+		if ( presetMetadata.valueFunc ) {
+			value = presetMetadata.valueFunc( themeJson, preset );
+		}
 
-        cssVariableAggregatorItems.push( {
-            variable: presetMetadata.cssVars.replace( '$slug', preset.slug ),
-            value,
-            kind: presetMetadata.kind,
-            detail: presetMetadata.detail,
-        } );
-    } );
+		cssVariableAggregatorItems.push( {
+			variable: presetMetadata.cssVars.replace( '$slug', preset.slug ),
+			value,
+			kind: presetMetadata.kind,
+			detail: presetMetadata.detail,
+		} );
+	} );
 
-    return cssVariableAggregatorItems;
-};
+	return cssVariableAggregatorItems;
+}
 
 async function wpThemeJson( themeJson: ThemeJson ) {
-    const { settings } = themeJson;
-    let cssVariableAggregatorItems: CssVariableAggregatorItem[] = [];
+	const { settings } = themeJson;
+	let cssVariableAggregatorItems: CssVariableAggregatorItem[] = [];
 
-    const coreThemeJson = await import( './theme.json' ) as ThemeJson;
-    const { settings: coreSettings } = coreThemeJson;
+	const coreThemeJson = ( await import( './theme.json' ) ) as ThemeJson;
+	const { settings: coreSettings } = coreThemeJson;
 
-    PRESETS_METADATA.forEach( ( presetMetadata ) => {
-        // @todo: Work on this type.
-        // @ts-ignore
-        const { corePresets, presets } = presetMetadata.path.reduce( ( settingsObjects, path ) => {
-            return {
-                corePresets: settingsObjects.corePresets?.[path] ?? [],
-                presets: settingsObjects.presets?.[path] ?? [],
-            };
-        }, {corePresets: coreSettings, presets: settings} );
+	PRESETS_METADATA.forEach( ( presetMetadata ) => {
+		// @todo: Work on this type.
+		// @ts-ignore
+		const { corePresets, presets } = presetMetadata.path.reduce(
+			// @ts-ignore
+			( settingsObjects, path ) => {
+				return {
+					corePresets: settingsObjects.corePresets?.[ path ] ?? [],
+					presets: settingsObjects.presets?.[ path ] ?? [],
+				};
+			},
+			{ corePresets: coreSettings, presets: settings }
+		);
 
-        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, corePresets, cssVariableAggregatorItems, themeJson );
-        cssVariableAggregatorItems = aggregateAutoCompletionItems( presetMetadata, presets, cssVariableAggregatorItems, themeJson );
-    } );
+		cssVariableAggregatorItems = aggregateAutoCompletionItems(
+			presetMetadata,
+			corePresets,
+			cssVariableAggregatorItems,
+			themeJson
+		);
+		cssVariableAggregatorItems = aggregateAutoCompletionItems(
+			presetMetadata,
+			presets,
+			cssVariableAggregatorItems,
+			themeJson
+		);
+	} );
 
-    return {
-        cssVariableAggregatorItems,
-    };
+	return {
+		cssVariableAggregatorItems,
+	};
 }
 
 export default wpThemeJson;
