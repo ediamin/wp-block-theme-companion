@@ -66,8 +66,17 @@ export class CssVariableCompletionItemProvider
 					const markdownString = new vscode.MarkdownString();
 					markdownString.supportHtml = true;
 					markdownString.appendMarkdown(
-						`Value: ${ documentation }`
+						`value: ${ documentation }`
 					);
+
+					markdownString.appendCodeblock(
+						[
+							'// theme.json',
+							JSON.stringify( variable.preset, null, 2 ),
+						].join( '\n' ),
+						'jsonc'
+					);
+
 					completionItem.documentation = markdownString;
 
 					// Make sure our completion item group are first.
