@@ -47,7 +47,7 @@ function getComputedFluidTypographyValue( args: FluidTypographyArgs = {} ): stri
 
     const viewportWidthOffset = `${parseFloat((minimumViewportWidth.value / 100).toFixed(3))}${fontSizeUnit}`;
     const linearFactor = 100 * ((maximumFontSize.value - minimumFontSize.value) / (maximumViewportWidth.value - minimumViewportWidth.value));
-    const linearFactorScaled = (linearFactor * (scaleFactor || 1)).toFixed(3);
+    const linearFactorScaled = parseFloat(((linearFactor || 1) * (scaleFactor || 1)).toFixed(3));
 
     const fluidTargetFontSize = `${ minimumFontSizeRem?.value || '14px'}${minimumFontSizeRem?.unit || 'rem'} + ((1vw - ${viewportWidthOffset}) * ${linearFactorScaled})`;
 
