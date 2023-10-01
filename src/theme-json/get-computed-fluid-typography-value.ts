@@ -8,9 +8,7 @@ export interface FluidTypographyArgs {
 	scaleFactor?: number;
 }
 
-function getComputedFluidTypographyValue(
-	args: FluidTypographyArgs = {}
-): string | null {
+function getComputedFluidTypographyValue( args: FluidTypographyArgs = {} ): string | null {
 	const {
 		maximumViewportWidth: maximumViewportWidthRaw,
 		minimumViewportWidth: minimumViewportWidthRaw,
@@ -31,19 +29,13 @@ function getComputedFluidTypographyValue(
 		return null;
 	}
 
-	const maximumViewportWidth = getTypographyValueAndUnit(
-		maximumViewportWidthRaw,
-		{
-			coerceTo: fontSizeUnit,
-		}
-	);
+	const maximumViewportWidth = getTypographyValueAndUnit( maximumViewportWidthRaw, {
+		coerceTo: fontSizeUnit,
+	} );
 
-	const minimumViewportWidth = getTypographyValueAndUnit(
-		minimumViewportWidthRaw,
-		{
-			coerceTo: fontSizeUnit,
-		}
-	);
+	const minimumViewportWidth = getTypographyValueAndUnit( minimumViewportWidthRaw, {
+		coerceTo: fontSizeUnit,
+	} );
 
 	if ( ! minimumViewportWidth || ! maximumViewportWidth ) {
 		return null;
@@ -56,9 +48,7 @@ function getComputedFluidTypographyValue(
 		100 *
 		( ( maximumFontSize.value - minimumFontSize.value ) /
 			( maximumViewportWidth.value - minimumViewportWidth.value ) );
-	const linearFactorScaled = parseFloat(
-		( ( linearFactor || 1 ) * ( scaleFactor || 1 ) ).toFixed( 3 )
-	);
+	const linearFactorScaled = parseFloat( ( ( linearFactor || 1 ) * ( scaleFactor || 1 ) ).toFixed( 3 ) );
 
 	const minimumFontSizeRem = getTypographyValueAndUnit( minimumFontSizeRaw, {
 		coerceTo: 'rem',

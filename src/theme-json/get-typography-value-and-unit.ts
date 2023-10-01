@@ -36,9 +36,7 @@ function getTypographyValueAndUnit(
 	} as Required< Options >;
 
 	const acceptableUnitGroups = opts.acceptableUnits.join( '|' );
-	const pattern = new RegExp(
-		`^(\\d*\\.?\\d+)(${ acceptableUnitGroups }){1,1}$`
-	);
+	const pattern = new RegExp( `^(\\d*\\.?\\d+)(${ acceptableUnitGroups }){1,1}$` );
 
 	const matches = rawValue.toString().match( pattern );
 
@@ -56,10 +54,7 @@ function getTypographyValueAndUnit(
 		unit = opts.coerceTo;
 	}
 
-	if (
-		'px' === unit &&
-		( 'em' === opts.coerceTo || 'rem' === opts.coerceTo )
-	) {
+	if ( 'px' === unit && ( 'em' === opts.coerceTo || 'rem' === opts.coerceTo ) ) {
 		value = value / opts.rootSizeValue;
 		unit = opts.coerceTo;
 	}
@@ -69,10 +64,7 @@ function getTypographyValueAndUnit(
 	 * since we assume a root size value. Later we might like to differentiate between
 	 * :root font size (rem) and parent element font size (em) relativity.
 	 */
-	if (
-		( 'em' === opts.coerceTo || 'rem' === opts.coerceTo ) &&
-		( 'em' === unit || 'rem' === unit )
-	) {
+	if ( ( 'em' === opts.coerceTo || 'rem' === opts.coerceTo ) && ( 'em' === unit || 'rem' === unit ) ) {
 		unit = opts.coerceTo;
 	}
 

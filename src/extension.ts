@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
 import { CssVariableHoverProvider } from './css-variable-hover-provider';
-import getCssVariableDoc from './get-css-variable-doc';
 import { getThemeJson, wpThemeJson } from './theme-json';
 
 export async function activate( context: vscode.ExtensionContext ) {
@@ -12,43 +11,27 @@ export async function activate( context: vscode.ExtensionContext ) {
 
 	classCompletionSubscriptions.forEach( ( selector ) => {
 		context.subscriptions.push(
-			vscode.languages.registerCompletionItemProvider(
-				selector,
-				classCompletionProvider
-			)
+			vscode.languages.registerCompletionItemProvider( selector, classCompletionProvider )
 		);
 	} );
 
-	const cssVariableCompletionProvider =
-		new CssVariableCompletionItemProvider();
+	const cssVariableCompletionProvider = new CssVariableCompletionItemProvider();
 	const cssVariableHoverProvider = new CssVariableHoverProvider();
-	const cssVariableCompletionSubscriptions = [
-		'html',
-		'cshtml',
-		'json',
-		'css',
-		'less',
-		'scss',
-	];
+	const cssVariableCompletionSubscriptions = [ 'html', 'cshtml', 'json', 'css', 'less', 'scss' ];
 
 	context.subscriptions.push(
 		vscode.languages.registerCompletionItemProvider(
 			cssVariableCompletionSubscriptions,
 			cssVariableCompletionProvider
 		),
-		vscode.languages.registerHoverProvider(
-			cssVariableCompletionSubscriptions,
-			cssVariableHoverProvider
-		)
+		vscode.languages.registerHoverProvider( cssVariableCompletionSubscriptions, cssVariableHoverProvider )
 	);
 
 	const setThemeJsonFile = vscode.commands.registerCommand(
 		'wpBlockThemeCompanion.useThisThemeJson',
 		() => {
-			const projectRoot =
-				vscode.workspace.workspaceFolders?.[ 0 ].uri.path ?? '';
-			const filePath =
-				vscode.window.activeTextEditor?.document.uri.path ?? '';
+			const projectRoot = vscode.workspace.workspaceFolders?.[ 0 ].uri.path ?? '';
+			const filePath = vscode.window.activeTextEditor?.document.uri.path ?? '';
 			const relativePath = filePath?.replace( `${ projectRoot }/`, '' );
 
 			if ( ! relativePath ) {
@@ -92,13 +75,9 @@ export async function activate( context: vscode.ExtensionContext ) {
 	const themeJsonData = await wpThemeJson( themeJson );
 
 	// Refresh autocompletion data and set the data generated from the theme.json.
-	cssVariableCompletionProvider.refreshCompletionItems(
-		themeJsonData.cssVariableAggregatorItems
-	);
+	cssVariableCompletionProvider.refreshCompletionItems( themeJsonData.cssVariableAggregatorItems );
 
-	cssVariableHoverProvider.refreshAggregatorItems(
-		themeJsonData.cssVariableAggregatorItems
-	);
+	cssVariableHoverProvider.refreshAggregatorItems( themeJsonData.cssVariableAggregatorItems );
 }
 
 export function deactivate() {}

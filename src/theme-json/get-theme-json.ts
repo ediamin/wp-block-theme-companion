@@ -9,9 +9,7 @@ async function getThemeJson(): Promise< ThemeJson > {
 	};
 
 	const config = vscode.workspace.getConfiguration();
-	const themeJsonPath = config.get(
-		'wpBlockThemeCompanion.themeJsonPath'
-	) as string;
+	const themeJsonPath = config.get( 'wpBlockThemeCompanion.themeJsonPath' ) as string;
 
 	if ( ! themeJsonPath ) {
 		vscode.window.showErrorMessage(
@@ -27,10 +25,7 @@ async function getThemeJson(): Promise< ThemeJson > {
 		return themeJson;
 	}
 
-	const jsonFileUri = vscode.Uri.joinPath(
-		workspaceFolder.uri,
-		themeJsonPath
-	);
+	const jsonFileUri = vscode.Uri.joinPath( workspaceFolder.uri, themeJsonPath );
 
 	try {
 		// Read the JSON file
@@ -40,9 +35,7 @@ async function getThemeJson(): Promise< ThemeJson > {
 		const jsonText = Buffer.from( fileContent ).toString( 'utf8' );
 		themeJson = JSON.parse( jsonText ) as ThemeJson;
 	} catch ( error ) {
-		vscode.window.showErrorMessage(
-			`Error reading or parsing JSON file:  ${ themeJsonPath }`
-		);
+		vscode.window.showErrorMessage( `Error reading or parsing JSON file:  ${ themeJsonPath }` );
 	}
 
 	return themeJson;

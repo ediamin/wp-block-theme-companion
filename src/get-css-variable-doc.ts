@@ -19,9 +19,7 @@ function getCssVariableDoc( details: CssVariableItem ): vscode.MarkdownString {
 	markdownString.appendMarkdown( `value: ${ documentation }` );
 
 	markdownString.appendCodeblock(
-		[ '// theme.json', JSON.stringify( details.preset, null, 2 ) ].join(
-			'\n'
-		),
+		[ '// theme.json', JSON.stringify( details.preset, null, 2 ) ].join( '\n' ),
 		'jsonc'
 	);
 

@@ -3,11 +3,7 @@ import { empty } from '../utils';
 import getComputedFluidTypographyValue from './get-computed-fluid-typography-value';
 import getTypographyValueAndUnit from './get-typography-value-and-unit';
 
-import type {
-	FontSizesPreset,
-	SettingsPropertiesTypography,
-	ThemeJson,
-} from '../types';
+import type { FontSizesPreset, SettingsPropertiesTypography, ThemeJson } from '../types';
 
 interface FluidTypographySettings {
 	minViewportWidth?: string;
@@ -34,15 +30,12 @@ function getTypographyFontSizeValue(
 	}
 
 	// Checks if fluid font sizes are activated.
-	const typographySettings: SettingsPropertiesTypography =
-		themeJson?.settings?.typography ?? {};
-	const layoutSettings: { wideSize?: string } =
-		themeJson.settings?.layout ?? {};
+	const typographySettings: SettingsPropertiesTypography = themeJson?.settings?.typography ?? {};
+	const layoutSettings: { wideSize?: string } = themeJson.settings?.layout ?? {};
 
 	shouldUseFluidTypography =
 		typographySettings?.fluid !== undefined &&
-		( typographySettings.fluid === true ||
-			Object.keys( typographySettings?.fluid ?? {} ).length )
+		( typographySettings.fluid === true || Object.keys( typographySettings?.fluid ?? {} ).length )
 			? true
 			: shouldUseFluidTypography;
 
@@ -50,8 +43,7 @@ function getTypographyFontSizeValue(
 		return preset.size;
 	}
 
-	const fluidSettings: FluidTypographySettings =
-		typographySettings?.fluid || {};
+	const fluidSettings: FluidTypographySettings = typographySettings?.fluid || {};
 
 	// Defaults.
 	const defaultMaximumViewportWidth: string = '1600px';
@@ -62,10 +54,8 @@ function getTypographyFontSizeValue(
 	const defaultMinimumFontSizeLimit: string = '14px';
 
 	// Defaults overrides.
-	const minimumViewportWidth: string =
-		fluidSettings.minViewportWidth || defaultMinimumViewportWidth;
-	let maximumViewportWidth: string =
-		layoutSettings?.wideSize || defaultMaximumViewportWidth;
+	const minimumViewportWidth: string = fluidSettings.minViewportWidth || defaultMinimumViewportWidth;
+	let maximumViewportWidth: string = layoutSettings?.wideSize || defaultMaximumViewportWidth;
 	if ( fluidSettings.maxViewportWidth ) {
 		maximumViewportWidth = fluidSettings.maxViewportWidth;
 	}
@@ -103,19 +93,12 @@ function getTypographyFontSizeValue(
 	}
 
 	// Parses the minimum font size limit, so we can perform checks using it.
-	const minimumFontSizeLimitValue = getTypographyValueAndUnit(
-		minimumFontSizeLimit,
-		{
-			coerceTo: preferredSize.unit,
-		}
-	);
+	const minimumFontSizeLimitValue = getTypographyValueAndUnit( minimumFontSizeLimit, {
+		coerceTo: preferredSize.unit,
+	} );
 
 	// Don't enforce minimum font size if a font size has explicitly set a min and max value.
-	if (
-		minimumFontSizeLimitValue?.value &&
-		! minimumFontSizeRaw &&
-		! maximumFontSizeRaw
-	) {
+	if ( minimumFontSizeLimitValue?.value && ! minimumFontSizeRaw && ! maximumFontSizeRaw ) {
 		/*
 		 * If a minimum size was not passed to this function
 		 * and the user-defined font size is lower than $minimumFontSizeLimitValue,
@@ -137,9 +120,7 @@ function getTypographyFontSizeValue(
 	 */
 	if ( ! minimumFontSizeRaw ) {
 		const preferredFontSizeInPx: number =
-			preferredSize.unit === 'px'
-				? preferredSize.value
-				: preferredSize.value * 16;
+			preferredSize.unit === 'px' ? preferredSize.value : preferredSize.value * 16;
 
 		/*
 		 * The scale factor is a multiplier that affects how quickly the curve will move towards the minimum,
@@ -148,10 +129,7 @@ function getTypographyFontSizeValue(
 		 * The scale factor is constrained between min and max values.
 		 */
 		const minimumFontSizeFactor: number = Math.min(
-			Math.max(
-				1 - 0.075 * Math.log2( preferredFontSizeInPx ),
-				defaultMinimumFontSizeFactorMin
-			),
+			Math.max( 1 - 0.075 * Math.log2( preferredFontSizeInPx ), defaultMinimumFontSizeFactorMin ),
 			defaultMinimumFontSizeFactorMax
 		);
 		const calculatedMinimumFontSize: number = parseFloat(

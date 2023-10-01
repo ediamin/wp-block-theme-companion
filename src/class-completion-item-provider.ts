@@ -3,8 +3,6 @@ import * as vscode from 'vscode';
 import classAggregator from './class-aggregator';
 
 import type {
-	CancellationToken,
-	CompletionContext,
 	CompletionItem,
 	CompletionItemProvider,
 	CompletionList,
@@ -22,9 +20,7 @@ export class ClassCompletionItemProvider implements CompletionItemProvider {
 
 	provideCompletionItems(
 		document: TextDocument,
-		position: Position,
-		token: CancellationToken,
-		context: CompletionContext
+		position: Position
 	): ProviderResult< CompletionItem[] | CompletionList< CompletionItem > > {
 		if ( ! canTriggerCompletion( document, position ) ) {
 			return [ new vscode.CompletionItem( '' ) ];
@@ -51,53 +47,31 @@ export class ClassCompletionItemProvider implements CompletionItemProvider {
 }
 
 type AttributeName = 'class' | 'className';
-function canTriggerCompletion(
-	document: vscode.TextDocument,
-	position: vscode.Position
-): boolean {
-	const attributeName: AttributeName = [
-		'typescriptreact',
-		'javascriptreact',
-	].includes( document.languageId )
+function canTriggerCompletion( document: vscode.TextDocument, position: vscode.Position ): boolean {
+	const attributeName: AttributeName = [ 'typescriptreact', 'javascriptreact' ].includes(
+		document.languageId
+	)
 		? 'className'
 		: 'class';
 
 	const lineUntilCursorPosition = getLineUntilPosition( document, position );
-	const textAfterAttributeStart = getTextAfterAttributeStart(
-		lineUntilCursorPosition,
-		attributeName
-	);
-	const attributeClosed = isAttributeClosed(
-		textAfterAttributeStart,
-		attributeName
-	);
+	const textAfterAttributeStart = getTextAfterAttributeStart( lineUntilCursorPosition, attributeName );
+	const attributeClosed = isAttributeClosed( textAfterAttributeStart, attributeName );
 
 	return textAfterAttributeStart.length > 1 && attributeClosed;
 }
 
 // helper functions
-function getLineUntilPosition(
-	document: vscode.TextDocument,
-	position: vscode.Position
-): string {
-	return document.getText(
-		new vscode.Range( position.with( undefined, 0 ), position )
-	);
+function getLineUntilPosition( document: vscode.TextDocument, position: vscode.Position ): string {
+	return document.getText( new vscode.Range( position.with( undefined, 0 ), position ) );
 }
 
-function getTextAfterAttributeStart(
-	lineUntilPosition: string,
-	attributeName: AttributeName
-): string {
-	const lastAttributeOccurrence =
-		lineUntilPosition.lastIndexOf( attributeName );
+function getTextAfterAttributeStart( lineUntilPosition: string, attributeName: AttributeName ): string {
+	const lastAttributeOccurrence = lineUntilPosition.lastIndexOf( attributeName );
 	return lineUntilPosition.substr( lastAttributeOccurrence );
 }
 
-function isAttributeClosed(
-	text: string,
-	attributeName: AttributeName
-): boolean {
+function isAttributeClosed( text: string, attributeName: AttributeName ): boolean {
 	const attributeRegex = new RegExp(
 		`${ attributeName }=(?:\"[a-zA-Z0-9-\\s]*\"|\'[a-zA-Z0-9-\\s]*\'|.*[=>])`
 	);

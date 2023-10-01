@@ -1,10 +1,6 @@
 import PRESETS_METADATA from './presets-metadata';
 
-import type {
-	CssVariableAggregatorItems,
-	PresetMetadata,
-	ThemeJson,
-} from '../types';
+import type { CssVariableAggregatorItems, PresetMetadata, ThemeJson } from '../types';
 
 function aggregateAutoCompletionItems(
 	presetMetadata: PresetMetadata,

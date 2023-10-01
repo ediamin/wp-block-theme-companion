@@ -13,9 +13,7 @@ import type {
 	TextDocument,
 } from 'vscode';
 
-export class CssVariableCompletionItemProvider
-	implements CompletionItemProvider
-{
+export class CssVariableCompletionItemProvider implements CompletionItemProvider {
 	private completionItems?: PromiseLike< CompletionItem[] >;
 
 	constructor() {
@@ -33,54 +31,36 @@ export class CssVariableCompletionItemProvider
 		return this.completionItems as PromiseLike< vscode.CompletionItem[] >;
 	}
 
-	public refreshCompletionItems(
-		aggregatorItems: CssVariableAggregatorItems = {}
-	) {
-		this.completionItems = cssVariableAggregator( aggregatorItems ).then(
-			( cssVariable ) => {
-				const completionItems = Object.keys( cssVariable ).map(
-					( variable ) => {
-						const item = cssVariable[ variable ];
-						const completionItem = new vscode.CompletionItem(
-							variable,
-							item.kind
-						);
-						completionItem.insertText = variable;
+	public refreshCompletionItems( aggregatorItems: CssVariableAggregatorItems = {} ) {
+		this.completionItems = cssVariableAggregator( aggregatorItems ).then( ( cssVariable ) => {
+			const completionItems = Object.keys( cssVariable ).map( ( variable ) => {
+				const item = cssVariable[ variable ];
+				const completionItem = new vscode.CompletionItem( variable, item.kind );
+				completionItem.insertText = variable;
 
-						if ( item.detail ) {
-							completionItem.detail = item.detail;
-						}
+				if ( item.detail ) {
+					completionItem.detail = item.detail;
+				}
 
-						completionItem.documentation =
-							getCssVariableDoc( item );
+				completionItem.documentation = getCssVariableDoc( item );
 
-						// Make sure our completion item group are first.
-						completionItem.preselect = true;
-						return completionItem;
-					}
-				);
+				// Make sure our completion item group are first.
+				completionItem.preselect = true;
+				return completionItem;
+			} );
 
-				return completionItems;
-			}
-		);
+			return completionItems;
+		} );
 	}
 }
 
-function canTriggerCompletion(
-	document: vscode.TextDocument,
-	position: vscode.Position
-): boolean {
+function canTriggerCompletion( document: vscode.TextDocument, position: vscode.Position ): boolean {
 	const lineUntilCursorPosition = getLineUntilPosition( document, position );
 	const regex = /var\((?![^\)]*\))/;
 
 	return regex.test( lineUntilCursorPosition );
 }
 
-function getLineUntilPosition(
-	document: vscode.TextDocument,
-	position: vscode.Position
-): string {
-	return document.getText(
-		new vscode.Range( position.with( undefined, 0 ), position )
-	);
+function getLineUntilPosition( document: vscode.TextDocument, position: vscode.Position ): string {
+	return document.getText( new vscode.Range( position.with( undefined, 0 ), position ) );
 }
