@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import cssVariableAggregator from './css-variable-aggregator';
+import getCssVariableDoc from './get-css-variable-doc';
 import { CssVariableAggregatorItems } from './types';
 
 import type {
@@ -50,32 +51,8 @@ export class CssVariableCompletionItemProvider
 							completionItem.detail = item.detail;
 						}
 
-						let documentation = '';
-
-						switch ( item.kind ) {
-							case vscode.CompletionItemKind.Color:
-								documentation = `<span style="background-color:${ item.value };">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;${ item.value }`;
-								break;
-							default:
-								documentation = item.value;
-								break;
-						}
-
-						const markdownString = new vscode.MarkdownString();
-						markdownString.supportHtml = true;
-						markdownString.appendMarkdown(
-							`value: ${ documentation }`
-						);
-
-						markdownString.appendCodeblock(
-							[
-								'// theme.json',
-								JSON.stringify( item.preset, null, 2 ),
-							].join( '\n' ),
-							'jsonc'
-						);
-
-						completionItem.documentation = markdownString;
+						completionItem.documentation =
+							getCssVariableDoc( item );
 
 						// Make sure our completion item group are first.
 						completionItem.preselect = true;

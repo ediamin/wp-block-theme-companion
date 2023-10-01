@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
+import { CssVariableHoverProvider } from './css-variable-hover-provider';
+import getCssVariableDoc from './get-css-variable-doc';
 import { getThemeJson, wpThemeJson } from './theme-json';
 
 export async function activate( context: vscode.ExtensionContext ) {
@@ -19,16 +21,26 @@ export async function activate( context: vscode.ExtensionContext ) {
 
 	const cssVariableCompletionProvider =
 		new CssVariableCompletionItemProvider();
-	const cssVariableCompletionSubscriptions = [ 'html', 'cshtml', 'json' ];
+	const cssVariableHoverProvider = new CssVariableHoverProvider();
+	const cssVariableCompletionSubscriptions = [
+		'html',
+		'cshtml',
+		'json',
+		'css',
+		'less',
+		'scss',
+	];
 
-	cssVariableCompletionSubscriptions.forEach( ( selector ) => {
-		context.subscriptions.push(
-			vscode.languages.registerCompletionItemProvider(
-				selector,
-				cssVariableCompletionProvider
-			)
-		);
-	} );
+	context.subscriptions.push(
+		vscode.languages.registerCompletionItemProvider(
+			cssVariableCompletionSubscriptions,
+			cssVariableCompletionProvider
+		),
+		vscode.languages.registerHoverProvider(
+			cssVariableCompletionSubscriptions,
+			cssVariableHoverProvider
+		)
+	);
 
 	const setThemeJsonFile = vscode.commands.registerCommand(
 		'wpBlockThemeCompanion.useThisThemeJson',
@@ -81,6 +93,10 @@ export async function activate( context: vscode.ExtensionContext ) {
 
 	// Refresh autocompletion data and set the data generated from the theme.json.
 	cssVariableCompletionProvider.refreshCompletionItems(
+		themeJsonData.cssVariableAggregatorItems
+	);
+
+	cssVariableHoverProvider.refreshAggregatorItems(
 		themeJsonData.cssVariableAggregatorItems
 	);
 }
