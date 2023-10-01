@@ -4,8 +4,6 @@ import cssVariableAggregator from './css-variable-aggregator';
 import { CssVariableAggregatorItems } from './types';
 
 import type {
-	CancellationToken,
-	CompletionContext,
 	CompletionItem,
 	CompletionItemProvider,
 	CompletionList,
@@ -25,9 +23,7 @@ export class CssVariableCompletionItemProvider
 
 	provideCompletionItems(
 		document: TextDocument,
-		position: Position,
-		token: CancellationToken,
-		context: CompletionContext
+		position: Position
 	): ProviderResult< CompletionItem[] | CompletionList< CompletionItem > > {
 		if ( ! canTriggerCompletion( document, position ) ) {
 			return [ new vscode.CompletionItem( '' ) ];
@@ -37,52 +33,55 @@ export class CssVariableCompletionItemProvider
 	}
 
 	public refreshCompletionItems(
-		aggregatorItems: CssVariableAggregatorItems = []
+		aggregatorItems: CssVariableAggregatorItems = {}
 	) {
 		this.completionItems = cssVariableAggregator( aggregatorItems ).then(
 			( cssVariable ) => {
-				const completionItems = cssVariable.map( ( variable ) => {
-					const completionItem = new vscode.CompletionItem(
-						variable.variable,
-						variable.kind
-					);
-					completionItem.insertText = variable.variable;
+				const completionItems = Object.keys( cssVariable ).map(
+					( variable ) => {
+						const item = cssVariable[ variable ];
+						const completionItem = new vscode.CompletionItem(
+							variable,
+							item.kind
+						);
+						completionItem.insertText = variable;
 
-					if ( variable.detail ) {
-						completionItem.detail = variable.detail;
+						if ( item.detail ) {
+							completionItem.detail = item.detail;
+						}
+
+						let documentation = '';
+
+						switch ( item.kind ) {
+							case vscode.CompletionItemKind.Color:
+								documentation = `<span style="background-color:${ item.value };">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;${ item.value }`;
+								break;
+							default:
+								documentation = item.value;
+								break;
+						}
+
+						const markdownString = new vscode.MarkdownString();
+						markdownString.supportHtml = true;
+						markdownString.appendMarkdown(
+							`value: ${ documentation }`
+						);
+
+						markdownString.appendCodeblock(
+							[
+								'// theme.json',
+								JSON.stringify( item.preset, null, 2 ),
+							].join( '\n' ),
+							'jsonc'
+						);
+
+						completionItem.documentation = markdownString;
+
+						// Make sure our completion item group are first.
+						completionItem.preselect = true;
+						return completionItem;
 					}
-
-					let documentation = '';
-
-					switch ( variable.kind ) {
-						case vscode.CompletionItemKind.Color:
-							documentation = `<span style="background-color:${ variable.value };">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;${ variable.value }`;
-							break;
-						default:
-							documentation = variable.value;
-							break;
-					}
-
-					const markdownString = new vscode.MarkdownString();
-					markdownString.supportHtml = true;
-					markdownString.appendMarkdown(
-						`value: ${ documentation }`
-					);
-
-					markdownString.appendCodeblock(
-						[
-							'// theme.json',
-							JSON.stringify( variable.preset, null, 2 ),
-						].join( '\n' ),
-						'jsonc'
-					);
-
-					completionItem.documentation = markdownString;
-
-					// Make sure our completion item group are first.
-					completionItem.preselect = true;
-					return completionItem;
-				} );
+				);
 
 				return completionItems;
 			}

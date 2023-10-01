@@ -1,3 +1,10 @@
-import { CssVariableAggregatorItem } from './css-variable-aggregator-item';
+import { CompletionItemKind } from 'vscode';
 
-export type CssVariableAggregatorItems = CssVariableAggregatorItem[] | [];
+export interface CssVariableAggregatorItems {
+	[ variable: string ]: {
+		value: string;
+		preset: any;
+		kind: CompletionItemKind;
+		detail?: string;
+	};
+}

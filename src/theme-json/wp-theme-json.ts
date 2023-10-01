@@ -1,7 +1,7 @@
 import PRESETS_METADATA from './presets-metadata';
 
 import type {
-	CssVariableAggregatorItem,
+	CssVariableAggregatorItems,
 	PresetMetadata,
 	ThemeJson,
 } from '../types';
@@ -9,9 +9,9 @@ import type {
 function aggregateAutoCompletionItems(
 	presetMetadata: PresetMetadata,
 	presets: Record< string, any >[],
-	cssVariableAggregatorItems: CssVariableAggregatorItem[],
+	cssVariableAggregatorItems: CssVariableAggregatorItems,
 	themeJson: ThemeJson
-): CssVariableAggregatorItem[] {
+): CssVariableAggregatorItems {
 	presets.forEach( ( preset: Record< string, any > ) => {
 		let value = '';
 
@@ -23,13 +23,13 @@ function aggregateAutoCompletionItems(
 			value = presetMetadata.valueFunc( themeJson, preset );
 		}
 
-		cssVariableAggregatorItems.push( {
-			variable: presetMetadata.cssVars.replace( '$slug', preset.slug ),
+		const variable = presetMetadata.cssVars.replace( '$slug', preset.slug );
+		cssVariableAggregatorItems[ variable ] = {
 			value,
 			preset,
 			kind: presetMetadata.kind,
 			detail: presetMetadata.detail,
-		} );
+		};
 	} );
 
 	return cssVariableAggregatorItems;
@@ -37,7 +37,7 @@ function aggregateAutoCompletionItems(
 
 async function wpThemeJson( themeJson: ThemeJson ) {
 	const { settings } = themeJson;
-	let cssVariableAggregatorItems: CssVariableAggregatorItem[] = [];
+	let cssVariableAggregatorItems: CssVariableAggregatorItems = {};
 
 	const coreThemeJson = ( await import( './theme.json' ) ) as ThemeJson;
 	const { settings: coreSettings } = coreThemeJson;
