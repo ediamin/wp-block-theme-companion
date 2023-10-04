@@ -48,6 +48,22 @@ const PRESETS_METADATA: PresetMetadata[] = [
 		kind: CompletionItemKind.TypeParameter,
 		detail: 'Font family preset.',
 	},
+	{
+		path: [ 'spacing', 'spacingSizes' ],
+		valueKey: 'size',
+		cssVars: '--wp--preset--spacing--$slug',
+		classes: {},
+		kind: CompletionItemKind.Variable,
+		detail: 'Space size preset.',
+	},
+	{
+		path: [ 'shadow', 'presets' ],
+		valueKey: 'shadow',
+		cssVars: '--wp--preset--shadow--$slug',
+		classes: {},
+		kind: CompletionItemKind.Variable,
+		detail: 'Shadow preset.',
+	},
 ];
 
 export default PRESETS_METADATA;

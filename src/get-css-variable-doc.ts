@@ -18,8 +18,10 @@ function getCssVariableDoc( details: CssVariableItem ): vscode.MarkdownString {
 	markdownString.supportHtml = true;
 	markdownString.appendMarkdown( `value: ${ documentation }` );
 
+	const sourceIndicator = details.source === 'core' ? ' (from wp core)' : '';
+
 	markdownString.appendCodeblock(
-		[ '// theme.json', JSON.stringify( details.preset, null, 2 ) ].join( '\n' ),
+		[ `// theme.json${ sourceIndicator }`, JSON.stringify( details.preset, null, 2 ) ].join( '\n' ),
 		'jsonc'
 	);
 
