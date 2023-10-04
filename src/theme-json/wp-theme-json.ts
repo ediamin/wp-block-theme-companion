@@ -1,3 +1,4 @@
+import getCustomVariables from './get-custom-variables';
 import PRESETS_METADATA from './presets-metadata';
 import setCoreSpacingSizes from './set-core-spacing-sizes';
 
@@ -81,6 +82,8 @@ async function wpThemeJson( themeJson: ThemeJson ) {
 			themeJson
 		);
 	} );
+
+	cssVariableAggregatorItems = getCustomVariables( themeJson, cssVariableAggregatorItems );
 
 	return {
 		cssVariableAggregatorItems,
