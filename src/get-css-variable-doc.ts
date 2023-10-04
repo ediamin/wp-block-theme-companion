@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { CssVariableItem } from './types';
+import type { CssVariableItem } from './types';
 
 function getCssVariableDoc( details: CssVariableItem ): vscode.MarkdownString {
 	let documentation = '';

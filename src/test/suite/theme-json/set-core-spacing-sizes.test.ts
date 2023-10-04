@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as assert from 'assert';
 
 import setCoreSpacingSizes from '../../../theme-json/set-core-spacing-sizes';

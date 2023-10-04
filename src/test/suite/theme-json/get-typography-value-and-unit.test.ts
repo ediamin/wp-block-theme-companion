@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as assert from 'assert';
 
 import getTypographyValueAndUnit from '../../../theme-json/get-typography-value-and-unit';
