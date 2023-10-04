@@ -6,25 +6,33 @@ import { CssVariableHoverProvider } from './css-variable-hover-provider';
 import { getThemeJson, wpThemeJson } from './theme-json';
 
 export async function activate( context: vscode.ExtensionContext ) {
-	const classCompletionProvider = new ClassCompletionItemProvider();
-	const classCompletionSubscriptions = [ 'html', 'cshtml', 'php' ];
-
-	classCompletionSubscriptions.forEach( ( selector ) => {
-		context.subscriptions.push(
-			vscode.languages.registerCompletionItemProvider( selector, classCompletionProvider )
-		);
-	} );
+	const documentSelectors = [
+		'css',
+		'html',
+		'javascript',
+		'javascriptreact',
+		'json',
+		'jsonc',
+		'less',
+		'markdown',
+		'php',
+		'plaintext',
+		'scss',
+		'sass',
+		'typescript',
+		'typescriptreact',
+		'vue',
+		'vue-html',
+	];
 
 	const cssVariableCompletionProvider = new CssVariableCompletionItemProvider();
 	const cssVariableHoverProvider = new CssVariableHoverProvider();
-	const cssVariableCompletionSubscriptions = [ 'html', 'cshtml', 'json', 'css', 'less', 'scss' ];
+	const classCompletionProvider = new ClassCompletionItemProvider();
 
 	context.subscriptions.push(
-		vscode.languages.registerCompletionItemProvider(
-			cssVariableCompletionSubscriptions,
-			cssVariableCompletionProvider
-		),
-		vscode.languages.registerHoverProvider( cssVariableCompletionSubscriptions, cssVariableHoverProvider )
+		vscode.languages.registerCompletionItemProvider( documentSelectors, cssVariableCompletionProvider ),
+		vscode.languages.registerHoverProvider( documentSelectors, cssVariableHoverProvider ),
+		vscode.languages.registerCompletionItemProvider( documentSelectors, classCompletionProvider )
 	);
 
 	const setThemeJsonFile = vscode.commands.registerCommand(
@@ -76,7 +84,6 @@ export async function activate( context: vscode.ExtensionContext ) {
 
 	// Refresh autocompletion data and set the data generated from the theme.json.
 	cssVariableCompletionProvider.refreshCompletionItems( themeJsonData.cssVariableAggregatorItems );
-
 	cssVariableHoverProvider.refreshAggregatorItems( themeJsonData.cssVariableAggregatorItems );
 }
 

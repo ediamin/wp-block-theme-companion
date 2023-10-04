@@ -10,13 +10,22 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onLanguage:css",
 		"onLanguage:html",
-		"onLanguage:cshtml",
-		"onLanguage:php",
-		"onLanguage:vue",
-		"onLanguage:typescriptreact",
 		"onLanguage:javascript",
-		"onLanguage:json"
+		"onLanguage:javascriptreact",
+		"onLanguage:json",
+		"onLanguage:jsonc",
+		"onLanguage:less",
+		"onLanguage:markdown",
+		"onLanguage:php",
+		"onLanguage:plaintext",
+		"onLanguage:scss",
+		"onLanguage:sass",
+		"onLanguage:typescript",
+		"onLanguage:typescriptreact",
+		"onLanguage:vue",
+		"onLanguage:vue-html"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
