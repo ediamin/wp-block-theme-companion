@@ -1,11 +1,12 @@
-import * as vscode from 'vscode';
+import { ExtensionContext, commands, languages, workspace } from 'vscode';
 
 import { ClassCompletionItemProvider } from './class-completion-item-provider';
 import { CssVariableCompletionItemProvider } from './css-variable-completion-item-provider';
 import { CssVariableHoverProvider } from './css-variable-hover-provider';
-import { getThemeJson, getThemeJsonPath, setThemeJsonPath, wpThemeJson } from './theme-json';
+import refreshProviders from './refresh-providers';
+import { getThemeJsonPath, setThemeJsonPath } from './theme-json';
 
-export async function activate( context: vscode.ExtensionContext ) {
+export async function activate( context: ExtensionContext ) {
 	const documentSelectors = [
 		'css',
 		'html',
@@ -25,23 +26,41 @@ export async function activate( context: vscode.ExtensionContext ) {
 		'vue-html',
 	];
 
-	// Commands.
-	const setThemeJsonPathCommand = vscode.commands.registerCommand(
-		'wpBlockThemeCompanion.setThemeJsonPath',
-		setThemeJsonPath
-	);
-
 	// Providers.
 	const cssVariableCompletionProvider = new CssVariableCompletionItemProvider();
 	const cssVariableHoverProvider = new CssVariableHoverProvider();
 	const classCompletionProvider = new ClassCompletionItemProvider();
 
+	const doRefreshProviders = () => {
+		refreshProviders( {
+			cssVariableCompletionProvider,
+			cssVariableHoverProvider,
+		} );
+	};
+
+	// Commands.
+	const setThemeJsonPathCommand = commands.registerCommand( 'wpBlockThemeCompanion.setThemeJsonPath', () =>
+		setThemeJsonPath( doRefreshProviders )
+	);
+
 	// Subscribe to the context.
 	context.subscriptions.push(
 		setThemeJsonPathCommand,
-		vscode.languages.registerCompletionItemProvider( documentSelectors, cssVariableCompletionProvider ),
-		vscode.languages.registerHoverProvider( documentSelectors, cssVariableHoverProvider ),
-		vscode.languages.registerCompletionItemProvider( documentSelectors, classCompletionProvider )
+		languages.registerCompletionItemProvider( documentSelectors, cssVariableCompletionProvider ),
+		languages.registerHoverProvider( documentSelectors, cssVariableHoverProvider ),
+		languages.registerCompletionItemProvider( documentSelectors, classCompletionProvider ),
+		// Referesh providers everytime we save the theme.json.
+		workspace.onDidChangeTextDocument( ( e ) => {
+			const projectRoot = workspace.workspaceFolders?.[ 0 ].uri.path ?? '';
+			const filePath = e.document.uri.path ?? '';
+			const relativePath = filePath?.replace( `${ projectRoot }/`, '' );
+
+			if ( relativePath !== getThemeJsonPath() ) {
+				return;
+			}
+
+			doRefreshProviders();
+		} )
 	);
 
 	// Get the theme.json path from config.
@@ -52,15 +71,8 @@ export async function activate( context: vscode.ExtensionContext ) {
 		return;
 	}
 
-	// Read the theme.json.
-	const themeJson = await getThemeJson( themeJsonPath );
-
-	// Generate the autocompletion data.
-	const themeJsonData = await wpThemeJson( themeJson );
-
-	// Refresh autocompletion data and set the data generated from the theme.json.
-	cssVariableCompletionProvider.refreshCompletionItems( themeJsonData.cssVariableAggregatorItems );
-	cssVariableHoverProvider.refreshAggregatorItems( themeJsonData.cssVariableAggregatorItems );
+	// It executes on activation when the theme.json path is already set.
+	doRefreshProviders();
 }
 
 export function deactivate() {}
