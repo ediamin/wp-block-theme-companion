@@ -16,6 +16,19 @@ interface ValidDataProvider {
 	};
 }
 
+interface InvalidDataProvider {
+	[ testTitle: string ]: {
+		spacingScale: {
+			operator?: any;
+			increment?: any;
+			steps?: any;
+			mediumStep?: any;
+			unit?: any;
+		};
+		expected: null;
+	};
+}
+
 suite(
 	'setCoreSpacingSizes: Tests generating the spacing presets array based on the spacing scale provided.',
 	() => {
@@ -109,6 +122,71 @@ suite(
 						spacingScale: themeSettings,
 					},
 				};
+
+				coreSettings = setCoreSpacingSizes( coreSettings, settings );
+
+				assert.deepEqual( coreSettings.spacing?.spacingSizes, expected );
+			} );
+		} );
+	}
+);
+
+suite(
+	'setCoreSpacingSizes: Tests generating the spacing presets array based on the spacing scale provided.',
+	() => {
+		const dataProvider: InvalidDataProvider = {
+			invalid_spacing_scale_values_missing_operator: {
+				spacingScale: { operator: '', increment: 1.5, steps: 1, mediumStep: 4, unit: 'rem' },
+				expected: null,
+			},
+			invalid_spacing_scale_values_non_numeric_increment: {
+				spacingScale: {
+					operator: '+',
+					increment: 'add two to previous value',
+					steps: 1,
+					mediumStep: 4,
+					unit: 'rem',
+				},
+				expected: null,
+			},
+			invalid_spacing_scale_values_non_numeric_steps: {
+				spacingScale: {
+					operator: '+',
+					increment: 1.5,
+					steps: 'spiral staircase preferred',
+					mediumStep: 4,
+					unit: 'rem',
+				},
+				expected: null,
+			},
+			invalid_spacing_scale_values_non_numeric_medium_step: {
+				spacingScale: {
+					operator: '+',
+					increment: 1.5,
+					steps: 5,
+					mediumStep: 'That which is just right',
+					unit: 'rem',
+				},
+				expected: null,
+			},
+			invalid_spacing_scale_values_missing_unit: {
+				spacingScale: { operator: '+', increment: 1.5, steps: 5, mediumStep: 4 },
+				expected: null,
+			},
+		};
+
+		Object.keys( dataProvider ).forEach( ( testTitle ) => {
+			test( testTitle, () => {
+				const spacingScale = dataProvider[ testTitle ].spacingScale;
+				const expected = dataProvider[ testTitle ].expected;
+
+				let coreSettings: SettingsProperties = {
+					spacing: {
+						spacingScale,
+					},
+				};
+
+				const settings: SettingsProperties = {};
 
 				coreSettings = setCoreSpacingSizes( coreSettings, settings );
 
