@@ -36,7 +36,7 @@ export async function activate( context: vscode.ExtensionContext ) {
 	);
 
 	const setThemeJsonFile = vscode.commands.registerCommand(
-		'wpBlockThemeCompanion.useThisThemeJson',
+		'wpBlockThemeCompanion.setThemeJsonPath',
 		() => {
 			const projectRoot = vscode.workspace.workspaceFolders?.[ 0 ].uri.path ?? '';
 			const filePath = vscode.window.activeTextEditor?.document.uri.path ?? '';

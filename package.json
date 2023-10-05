@@ -31,20 +31,20 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "wpBlockThemeCompanion.useThisThemeJson",
+				"command": "wpBlockThemeCompanion.setThemeJsonPath",
 				"title": "WP Block Theme Companion: Use this theme.json"
 			}
 		],
 		"menus": {
 			"commandPalette": [
 				{
-					"command": "wpBlockThemeCompanion.useThisThemeJson",
+					"command": "wpBlockThemeCompanion.setThemeJsonPath",
 					"when": "resourceFilename === theme.json"
 				}
 			],
 			"explorer/context": [
 				{
-					"command": "wpBlockThemeCompanion.useThisThemeJson",
+					"command": "wpBlockThemeCompanion.setThemeJsonPath",
 					"when": "resourceFilename === theme.json"
 				}
 			]
