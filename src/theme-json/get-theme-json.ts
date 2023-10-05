@@ -3,20 +3,10 @@ import * as vscode from 'vscode';
 import type { ThemeJson } from '../types/theme-json';
 
 // Get the theme.json from the user provided themeJsonPath extension setting.
-async function getThemeJson(): Promise< ThemeJson > {
+async function getThemeJson( themeJsonPath: string ): Promise< ThemeJson > {
 	let themeJson: ThemeJson = {
 		version: 2,
 	};
-
-	const config = vscode.workspace.getConfiguration();
-	const themeJsonPath = config.get( 'wpBlockThemeCompanion.themeJsonPath' ) as string;
-
-	if ( ! themeJsonPath ) {
-		vscode.window.showErrorMessage(
-			`theme.json path not found. 'wpBlockThemeCompanion.themeJsonPath' settings is empty.`
-		);
-		return themeJson;
-	}
 
 	const workspaceFolder = vscode.workspace.workspaceFolders?.[ 0 ];
 
