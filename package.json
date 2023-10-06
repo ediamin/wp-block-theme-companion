@@ -3,12 +3,23 @@
 	"displayName": "WP Block Theme Companion",
 	"description": "A VSCode extension for WordPress Block Theme development.",
 	"version": "0.0.1",
+	"author": "Edi Amin <to.ediamin@gmail.com>",
+	"publisher": "ediamin",
+	"categories": [
+		"Snippets",
+		"Other"
+	],
+	"keywords": [
+		"wordpress",
+		"block",
+		"theme",
+		"json",
+		"autocompletion"
+	],
+	"license": "SEE LICENSE IN LICENSE",
 	"engines": {
 		"vscode": "^1.81.0"
 	},
-	"categories": [
-		"Other"
-	],
 	"activationEvents": [
 		"onLanguage:css",
 		"onLanguage:html",
