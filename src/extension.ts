@@ -64,6 +64,7 @@ export async function activate( context: ExtensionContext ) {
 		setThemeJsonPathCommand,
 		languages.registerCompletionItemProvider( documentSelectors, cssVariableCompletionProvider ),
 		languages.registerHoverProvider( documentSelectors, cssVariableHoverProvider ),
+
 		// Referesh providers everytime we save the theme.json.
 		workspace.onDidSaveTextDocument( ( document ) => {
 			const projectRoot = workspace.workspaceFolders?.[ 0 ].uri.path ?? '';

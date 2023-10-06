@@ -1,12 +1,12 @@
-import * as vscode from 'vscode';
+import { CompletionItemKind, MarkdownString } from 'vscode';
 
 import type { CssVariableItem } from './types';
 
-function getCssVariableDoc( details: CssVariableItem ): vscode.MarkdownString {
+function getCssVariableDoc( details: CssVariableItem ): MarkdownString {
 	let documentation = '';
 
 	switch ( details.kind ) {
-		case vscode.CompletionItemKind.Color:
+		case CompletionItemKind.Color:
 			documentation = `<span style="background-color:${ details.value };">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;${ details.value }`;
 			break;
 		default:
@@ -14,7 +14,7 @@ function getCssVariableDoc( details: CssVariableItem ): vscode.MarkdownString {
 			break;
 	}
 
-	const markdownString = new vscode.MarkdownString();
+	const markdownString = new MarkdownString();
 	markdownString.supportHtml = true;
 	markdownString.appendMarkdown( `value: ${ documentation }` );
 

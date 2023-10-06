@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import { Uri, window, workspace } from 'vscode';
 
 import type { ThemeJson } from '../types/theme-json';
 
@@ -8,24 +8,24 @@ async function getThemeJson( themeJsonPath: string ): Promise< ThemeJson > {
 		version: 2,
 	};
 
-	const workspaceFolder = vscode.workspace.workspaceFolders?.[ 0 ];
+	const workspaceFolder = workspace.workspaceFolders?.[ 0 ];
 
 	if ( ! workspaceFolder ) {
-		vscode.window.showErrorMessage( 'No workspace folder found.' );
+		window.showErrorMessage( 'No workspace folder found.' );
 		return themeJson;
 	}
 
-	const jsonFileUri = vscode.Uri.joinPath( workspaceFolder.uri, themeJsonPath );
+	const jsonFileUri = Uri.joinPath( workspaceFolder.uri, themeJsonPath );
 
 	try {
 		// Read the JSON file
-		const fileContent = await vscode.workspace.fs.readFile( jsonFileUri );
+		const fileContent = await workspace.fs.readFile( jsonFileUri );
 
 		// Parse the JSON data
 		const jsonText = Buffer.from( fileContent ).toString( 'utf8' );
 		themeJson = JSON.parse( jsonText ) as ThemeJson;
 	} catch ( error ) {
-		vscode.window.showErrorMessage( `Error reading or parsing JSON file:  ${ themeJsonPath }` );
+		window.showErrorMessage( `Error reading or parsing JSON file:  ${ themeJsonPath }` );
 	}
 
 	return themeJson;

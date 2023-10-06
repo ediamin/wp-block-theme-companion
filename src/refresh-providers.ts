@@ -1,5 +1,3 @@
-import { StatusBarAlignment, ThemeColor, window } from 'vscode';
-
 import { CssVariableHoverProvider } from './css-variable-hover-provider';
 import { getThemeJson, getThemeJsonPath, wpThemeJson } from './theme-json';
 
