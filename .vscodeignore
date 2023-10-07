@@ -3,7 +3,13 @@
 out/**
 node_modules/**
 src/**
+.DS_Store
+.editorconfig
+.eslintignore
+.eslintrc.js
 .gitignore
+.prettierignore
+.prettierrc.js
 .yarnrc
 webpack.config.js
 vsc-extension-quickstart.md
