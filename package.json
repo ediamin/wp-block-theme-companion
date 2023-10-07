@@ -4,9 +4,21 @@
 	"description": "A VSCode extension for WordPress Block Theme development.",
 	"version": "0.0.1",
 	"author": "Edi Amin <to.ediamin@gmail.com>",
+	"license": "SEE LICENSE IN LICENSE",
+	"bugs": {
+		"url": "https://github.com/ediamin/wp-block-theme-companion/issues",
+		"email": "to.ediamin@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ediamin/wp-block-theme-companion.git"
+	},
+	"homepage": "https://github.com/ediamin/wp-block-theme-companion/blob/main/README.md",
+	"main": "./dist/extension.js",
+	"icon": "./media/logo.png",
+	"pricing": "Free",
 	"publisher": "ediamin",
 	"categories": [
-		"Snippets",
 		"Other"
 	],
 	"keywords": [
@@ -16,7 +28,6 @@
 		"json",
 		"autocompletion"
 	],
-	"license": "SEE LICENSE IN LICENSE",
 	"engines": {
 		"vscode": "^1.81.0"
 	},
@@ -38,8 +49,6 @@
 		"onLanguage:vue",
 		"onLanguage:vue-html"
 	],
-	"main": "./dist/extension.js",
-	"icon": "./media/logo.png",
 	"contributes": {
 		"commands": [
 			{
