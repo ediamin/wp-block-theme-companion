@@ -39,6 +39,7 @@
 		"onLanguage:vue-html"
 	],
 	"main": "./dist/extension.js",
+	"icon": "./media/logo.png",
 	"contributes": {
 		"commands": [
 			{
