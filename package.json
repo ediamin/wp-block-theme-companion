@@ -54,6 +54,11 @@
 			{
 				"command": "wpBlockThemeCompanion.setThemeJsonPath",
 				"title": "WP Block Theme Companion: Use this theme.json"
+			},
+			{
+				"command": "wpBlockThemeCompanion.showThemeJsonActions",
+				"title": "WP Block Theme Companion: Theme.json Actions",
+				"enablement": "wpBlockThemeCompanion.themeJsonPath != ''"
 			}
 		],
 		"menus": {
@@ -61,6 +66,10 @@
 				{
 					"command": "wpBlockThemeCompanion.setThemeJsonPath",
 					"when": "resourceFilename === theme.json"
+				},
+				{
+					"command": "wpBlockThemeCompanion.showThemeJsonActions",
+					"when": "false"
 				}
 			],
 			"explorer/context": [
