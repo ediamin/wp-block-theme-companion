@@ -22,7 +22,7 @@ function getLayoutVariables(
 ): CssVariableAggregatorItems {
 	const layoutSettings = themeJson.settings?.layout;
 
-	if ( ! layoutSettings || typeof layoutSettings !== 'object' ) {
+	if ( ! layoutSettings || typeof layoutSettings !== 'object' || Array.isArray( layoutSettings ) ) {
 		return cssVariableAggregatorItems;
 	}
 
