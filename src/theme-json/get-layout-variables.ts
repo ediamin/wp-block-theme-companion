@@ -1,6 +1,8 @@
-import { CompletionItemKind } from 'vscode';
-
 import type { CssVariableAggregatorItems, ThemeJson } from '../types';
+
+const COMPLETION_ITEM_KIND = {
+	Variable: 5,
+} as const;
 
 const LAYOUT_VARIABLES = [
 	{
@@ -43,7 +45,7 @@ function getLayoutVariables(
 					},
 				},
 			},
-			kind: CompletionItemKind.Variable,
+			kind: COMPLETION_ITEM_KIND.Variable,
 			detail,
 		};
 	} );
