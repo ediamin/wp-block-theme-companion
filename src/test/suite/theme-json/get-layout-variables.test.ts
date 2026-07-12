@@ -1,5 +1,7 @@
 import * as assert from 'assert';
 
+import { CompletionItemKind } from 'vscode';
+
 import getLayoutVariables from '../../../theme-json/get-layout-variables';
 
 import type { CssVariableAggregatorItems, ThemeJson } from '../../../types';
@@ -27,7 +29,7 @@ suite( 'getLayoutVariables: Tests generating CSS variables from settings.layout 
 					},
 				},
 			},
-			kind: 5,
+			kind: CompletionItemKind.Variable,
 			detail: 'Global content size layout variable.',
 		} );
 		assert.deepEqual( result[ '--wp--style--global--wide-size' ], {
@@ -40,7 +42,7 @@ suite( 'getLayoutVariables: Tests generating CSS variables from settings.layout 
 					},
 				},
 			},
-			kind: 5,
+			kind: CompletionItemKind.Variable,
 			detail: 'Global wide size layout variable.',
 		} );
 	} );
