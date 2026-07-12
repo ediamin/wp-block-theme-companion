@@ -7,6 +7,14 @@ import type { PresetMetadata } from '../types';
 
 const PRESETS_METADATA: PresetMetadata[] = [
 	{
+		path: [ 'border', 'radiusSizes' ],
+		valueKey: 'size',
+		cssVars: '--wp--preset--border-radius--$slug',
+		classes: {},
+		kind: CompletionItemKind.Variable,
+		detail: 'Border radius size preset.',
+	},
+	{
 		path: [ 'color', 'palette' ],
 		valueKey: 'color',
 		cssVars: '--wp--preset--color--$slug',

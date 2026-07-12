@@ -244,6 +244,24 @@ export interface SettingsPropertiesBorder {
      * Allow users to set custom border widths.
      */
     width?: boolean;
+    /**
+     * Border radius size presets for the border radius selector.
+     * Generates a custom property (`--wp--preset--border-radius--{slug}`) per preset value.
+     */
+    radiusSizes?: {
+      /**
+       * Name of the border radius size preset, translatable.
+       */
+      name?: string;
+      /**
+       * Unique identifier for the border radius size preset.
+       */
+      slug?: string;
+      /**
+       * CSS border-radius value, including units.
+       */
+      size?: string;
+    }[];
   };
   [k: string]: unknown;
 }

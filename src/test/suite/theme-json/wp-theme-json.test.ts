@@ -5,6 +5,35 @@ import wpThemeJson from '../../../theme-json/wp-theme-json';
 import type { ThemeJson } from '../../../types';
 
 suite( 'wpThemeJson: Core preset settings', () => {
+	test( 'generates border radius preset variables', async () => {
+		const themeJson = {
+			version: 2,
+			settings: {
+				border: {
+					radiusSizes: [
+						{ name: 'Small', slug: 'small', size: '0.25rem' },
+						{ name: 'Pill', slug: 'pill', size: '9999px' },
+					],
+				},
+			},
+		} as ThemeJson;
+
+		const { cssVariableAggregatorItems } = await wpThemeJson( themeJson );
+
+		assert.strictEqual(
+			cssVariableAggregatorItems[ '--wp--preset--border-radius--small' ].value,
+			'0.25rem'
+		);
+		assert.strictEqual(
+			cssVariableAggregatorItems[ '--wp--preset--border-radius--pill' ].value,
+			'9999px'
+		);
+		assert.strictEqual(
+			cssVariableAggregatorItems[ '--wp--preset--border-radius--small' ].source,
+			'theme'
+		);
+	} );
+
 	test( 'excludes each disabled core preset group while keeping theme presets', async () => {
 		const themeJson = {
 			version: 2,
