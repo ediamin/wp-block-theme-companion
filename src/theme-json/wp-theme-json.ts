@@ -19,7 +19,7 @@ const CORE_PRESET_SETTINGS: Record< string, string > = {
 	'typography.fontSizes': 'defaultFontSizes',
 };
 
-function areCorePresetsEnabled( settings: SettingsProperties, path: string[] ): boolean {
+function areCorePresetsEnabled( settings: SettingsProperties | undefined, path: string[] ): boolean {
 	const settingPath = path.join( '.' );
 	const toggle = CORE_PRESET_SETTINGS[ settingPath ];
 
@@ -29,6 +29,26 @@ function areCorePresetsEnabled( settings: SettingsProperties, path: string[] ): 
 
 	const group = settings?.[ path[ 0 ] ] as Record< string, unknown > | undefined;
 	return group?.[ toggle ] !== false;
+}
+
+function getPresets( settings: SettingsProperties | undefined, path: string[] ): Record< string, any >[] {
+	let value: unknown = settings;
+
+	for ( const segment of path ) {
+		if ( typeof value !== 'object' || value === null || Array.isArray( value ) ) {
+			return [];
+		}
+
+		value = ( value as Record< string, unknown > )[ segment ];
+	}
+
+	if ( ! Array.isArray( value ) ) {
+		return [];
+	}
+
+	return value.filter(
+		( preset ): preset is Record< string, any > => typeof preset === 'object' && preset !== null
+	);
 }
 
 function aggregateAutoCompletionItems(
@@ -72,20 +92,10 @@ async function wpThemeJson( themeJson: ThemeJson ) {
 	coreSettings = setCoreSpacingSizes( coreSettings as SettingsProperties, settings as SettingsProperties );
 
 	PRESETS_METADATA.forEach( ( presetMetadata ) => {
-		// @todo: Work on this type.
-		// @ts-ignore
-		let { corePresets, presets } = presetMetadata.path.reduce(
-			// @ts-ignore
-			( settingsObjects, path ) => {
-				return {
-					corePresets: settingsObjects.corePresets?.[ path ] ?? [],
-					presets: settingsObjects.presets?.[ path ] ?? [],
-				};
-			},
-			{ corePresets: coreSettings, presets: settings }
-		);
+		let corePresets = getPresets( coreSettings, presetMetadata.path );
+		const presets = getPresets( settings, presetMetadata.path );
 
-		if ( ! areCorePresetsEnabled( settings as SettingsProperties, presetMetadata.path ) ) {
+		if ( ! areCorePresetsEnabled( settings, presetMetadata.path ) ) {
 			corePresets = [];
 		}
 
