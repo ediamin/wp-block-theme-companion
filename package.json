@@ -2,7 +2,7 @@
 	"name": "wp-block-theme-companion",
 	"displayName": "WP Block Theme Companion",
 	"description": "VS Code extension for WordPress Block Theme developers.",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"author": "Edi Amin <to.ediamin@gmail.com>",
 	"license": "SEE LICENSE IN LICENSE",
 	"bugs": {
